@@ -2,7 +2,7 @@ import { LogMessageParams } from '../types.js';
 
 export type FrameOrIframe = HTMLIFrameElement | HTMLFrameElement;
 
-class RGAA2 {
+export class RGAA2 {
   // eslint-disable-next-line class-methods-use-this
   public RGAA211(frames: Array<FrameOrIframe>) {
     const wrongFrames: Array<LogMessageParams> = [];
@@ -47,5 +47,3 @@ class RGAA2 {
     return wrongFrames;
   }
 }
-
-export { RGAA2 };

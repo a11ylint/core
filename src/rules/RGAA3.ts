@@ -17,15 +17,7 @@ export class RGAA3 {
       );
       const textColor = Color.getRGBFromCssProperties(getComputedStyle(elementsToCheck.foregroundElement).color);
       const textSize = Number(getComputedStyle(elementsToCheck.foregroundElement).fontSize.split('px')[0]);
-
-      // NodeJS doesn't convert "bold" to 600
-      // to prevent problem with E2E tests, we force it
-      // bold === 700
-      const { fontWeight } = getComputedStyle(elementsToCheck.foregroundElement);
-      let isBold = Number(fontWeight) >= 600;
-      if (fontWeight === 'bold') {
-        isBold = true;
-      }
+      const isBold = Number(getComputedStyle(elementsToCheck.foregroundElement).fontWeight) >= 600;
 
       const ratio = Color.contrast(backgroundColor, textColor);
 

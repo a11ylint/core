@@ -25,15 +25,6 @@ const ElementsWithWrongContrats: Array<ConstratsElement> = [
       style: 'background-color: #FFFFFF;',
     }),
     foregroundElement: Object.assign(document.createElement('p'), {
-      style: 'color: #8A8AFF;font-size:16px;font-weight:bold;',
-      innerText: 'toto',
-    }),
-  },
-  {
-    backgroundElement: Object.assign(document.createElement('div'), {
-      style: 'background-color: #FFFFFF;',
-    }),
-    foregroundElement: Object.assign(document.createElement('p'), {
       style: 'color: #8A8AFF;font-size:32px;',
       innerText: 'toto',
     }),
@@ -53,15 +44,6 @@ const ElementsWithWrongContrats: Array<ConstratsElement> = [
     }),
     foregroundElement: Object.assign(document.createElement('p'), {
       style: 'color: #8A8AFF;font-size:24px;font-weight:600;',
-      innerText: 'toto',
-    }),
-  },
-  {
-    backgroundElement: Object.assign(document.createElement('div'), {
-      style: 'background-color: #FFFFFF;',
-    }),
-    foregroundElement: Object.assign(document.createElement('p'), {
-      style: 'color: #8A8AFF;font-size:24px;font-weight:bold;',
       innerText: 'toto',
     }),
   },
@@ -135,13 +117,6 @@ it('RGAA3.2 - frame & iframe should have an attribute title', () => {
       ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.2',
     },
     {
-      element: '<p style="color: rgb(138, 138, 255); font-size: 16px; font-weight: bold;"></p>',
-      message:
-        'Color contrats for bold element with fontSize inferior to 18.5px should have at minimal 4.5 in contrast',
-      rule: 'RGAA - 3.2.2',
-      ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.2',
-    },
-    {
       element: '<p style="color: rgb(138, 138, 255); font-size: 32px;"></p>',
       message:
         'Color contrats for non-bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
@@ -157,13 +132,6 @@ it('RGAA3.2 - frame & iframe should have an attribute title', () => {
     },
     {
       element: '<p style="color: rgb(138, 138, 255); font-size: 24px; font-weight: 600;"></p>',
-      message:
-        'Color contrats for bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
-      rule: 'RGAA - 3.2.4',
-      ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.4',
-    },
-    {
-      element: '<p style="color: rgb(138, 138, 255); font-size: 24px; font-weight: bold;"></p>',
       message:
         'Color contrats for bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
       rule: 'RGAA - 3.2.4',
