@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect, it } from 'vitest';
 import { RGAA8 } from '../../src/rules/RGAA8';
 
