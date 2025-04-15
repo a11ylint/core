@@ -15,14 +15,14 @@ export default defineConfig(({ mode }) => {
       clearMocks: true,
       css: false,
       include: ['tests/**/*.{test,spec}.[jt]s?(x)'],
-      reporters: ['basic', 'junit'],
+      reporters: ['default', 'junit'],
       outputFile: {
         junit: 'junit-report.xml',
       },
       poolOptions: {
-        threads: {
-          minThreads: env.CI === 'true' ? 1 : undefined,
-          maxThreads: env.CI === 'true' ? 2 : undefined,
+        forks: {
+          minForks: env.CI === 'true' ? 1 : undefined,
+          maxForks: env.CI === 'true' ? 2 : undefined,
         },
       },
       coverage: {
