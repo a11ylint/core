@@ -22,7 +22,7 @@ const framesAndIframesWithGreatTitle: Array<FrameOrIframe> = [
   Object.assign(document.createElement('frame'), { title: 'A video game' }),
 ];
 
-const core = new RGAA2();
+const core = new RGAA2('dom');
 
 it('RGAA2.1 - frame & iframe should have an attribute title', () => {
   expect(core.RGAA211([...framesAndIframesWithWrongTitle, ...framesAndIframesWithGreatTitle])).toHaveLength(0);
@@ -43,7 +43,7 @@ it('RGAA2.1 - frame & iframe should have an attribute title', () => {
 });
 
 it('RGAA2.2 - frame & iframe title should be revelant', () => {
-  expect(core.RGA221({ frames: framesAndIframesWithWrongTitle, customBannedWords: [] })).toStrictEqual([
+  expect(core.RGAA221({ frames: framesAndIframesWithWrongTitle, customBannedWords: [] })).toStrictEqual([
     {
       element: '<frame title="Frame 1">',
       message: 'frame & iframe title should be revelant',
@@ -82,9 +82,9 @@ it('RGAA2.2 - frame & iframe title should be revelant', () => {
     },
   ]);
 
-  expect(core.RGA221({ frames: framesAndIframesWithGreatTitle, customBannedWords: [] })).toHaveLength(0);
+  expect(core.RGAA221({ frames: framesAndIframesWithGreatTitle, customBannedWords: [] })).toHaveLength(0);
 
-  expect(core.RGA221({ frames: [...framesAndIframesWithGreatTitle], customBannedWords: ['video'] })).toStrictEqual([
+  expect(core.RGAA221({ frames: [...framesAndIframesWithGreatTitle], customBannedWords: ['video'] })).toStrictEqual([
     {
       element: '<frame title="A video game">',
       message: 'frame & iframe title should be revelant',
