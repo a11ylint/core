@@ -43,7 +43,6 @@ export class RGAA2 {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private RGAA211_virtual(frames: Array<FrameOrIframe>) {
     const wrongFrames: Array<LogMessageParams> = [];
     frames.forEach(frame => {
@@ -60,7 +59,6 @@ export class RGAA2 {
     return wrongFrames;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private RGAA211_dom(frames: Array<FrameOrIframe>) {
     const wrongFrames: Array<LogMessageParams> = [];
     frames.forEach(frame => {
@@ -77,7 +75,6 @@ export class RGAA2 {
     return wrongFrames;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private RGAA221_dom({
     frames,
     customBannedWords,
@@ -110,7 +107,6 @@ export class RGAA2 {
     return wrongFrames;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private RGAA221_virtual({
     frames,
     customBannedWords,

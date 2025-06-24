@@ -7,7 +7,6 @@ export type ConstratsElement = {
 };
 
 export class RGAA3 {
-  // eslint-disable-next-line class-methods-use-this
   public RGAA32(elements: Array<ConstratsElement>) {
     const wrongContrats: Array<LogMessageParams> = [];
 
