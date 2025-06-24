@@ -1,7 +1,6 @@
 import { LogMessageParams } from '../types.js';
 
 export class RGAA8 {
-  // eslint-disable-next-line class-methods-use-this
   public RGAA81(documents: Array<Document>) {
     const wrongElement: Array<LogMessageParams> = [];
     // check doctype is present
@@ -30,7 +29,6 @@ export class RGAA8 {
     return wrongElement;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public RGAA83(documents: Array<Document>) {
     const wrongElement: Array<LogMessageParams> = [];
     // check lang in html tag
@@ -48,7 +46,6 @@ export class RGAA8 {
     return wrongElement;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public RGAA85(documents: Array<Document>) {
     const wrongElement: Array<LogMessageParams> = [];
     documents.forEach(doc => {

@@ -34,7 +34,6 @@ export class RGAA1 {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private RGAA11_dom(
     elements: Array<SvgImageAreaProps | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
   ): LogMessageParams[] {
@@ -82,7 +81,6 @@ export class RGAA1 {
     return wrongElement;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private RGAA11_virtual(
     elements: Array<SvgImageAreaProps | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
   ): LogMessageParams[] {
