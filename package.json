@@ -84,5 +84,12 @@
   "volta": {
     "node": "22.14.0",
     "npm": "11.3.0"
+  },
+  "files": [
+    "build",
+    "template"
+  ],
+  "dependencies": {
+    "handlebars": "^4.7.8"
   }
 }

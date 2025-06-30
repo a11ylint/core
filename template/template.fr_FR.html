@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audit d'accessibilité RGAA {{website}}</title>
+    {{#if style}}
+    <style>
+      {{{style}}}
+    </style>
+    {{/if}}
+  </head>
+  <body>
+    <div class="watermark">
+      <img
+        src="https://avatars.githubusercontent.com/u/178393891?s=400&u=9809505d66bcc430eb6181c54fb225b24d31de29&v=4"
+        alt=""
+      />
+    </div>
+    <header>
+      <div class="header-content">
+        <h1>Audit d'accessibilité RGAA du site {{website}}</h1>
+        <p class="subtitle">
+          Rapport d'audit pour le site
+          <a href="{{baseUrl}}" class="site-url" target="_blank" rel="noopener noreferrer">{{baseUrl}} </a>
+        </p>
+      </div>
+    </header>
+
+    <main class="container">
+      {{#each audits}}
+      <section class="audit-summary" style="page-break-before: always">
+        <h2>Résumé de l'audit pour la page {{@key}}</h2>
+      </section>
+
+      {{#each this}} {{#if this.issues.length}}
+      <section class="issue-section" style="page-break-inside: avoid">
+        <div class="issue-header">
+          <h2 class="issue-title">{{@key}} - {{ this.message }}</h2>
+        </div>
+
+        <div class="issue-description">
+          <p><strong>Critère :</strong> {{ this.message }}</p>
+          {{#if this.ruleLink}}
+          <p>
+            <strong>Référence :</strong>
+            <a href="{{ this.ruleLink }}" class="reference-link" target="_blank" rel="noopener noreferrer">
+              {{ this.ruleLink }}
+            </a>
+          </p>
+          {{/if}}
+        </div>
+
+        <div class="elements-section">
+          <h3 class="elements-title">Éléments concernés :</h3>
+          {{#if this.hasDomElement}} {{#each this.issues}} {{#if element}}
+          <div class="code-block">{{ element }}</div>
+          {{/if}} {{/each}} {{else}}
+          <div class="no-elements">
+            Aucun élément du DOM directement concerné (erreur liée à la structure du document)
+          </div>
+          {{/if}}
+        </div>
+      </section>
+      {{/if}} {{/each}} {{/each}}
+      <section class="recommendations">
+        <h2>Recommandations générales RGAA</h2>
+        <ul class="recommendation-list">
+          <li>Respecter la structure sémantique des pages (titres, listes, sections, etc.).</li>
+          <li>Fournir des alternatives textuelles pertinentes pour chaque image, icône ou média non textuel.</li>
+          <li>
+            Vérifier la présence et la pertinence des titres de pages et des attributs <code>lang</code> sur l’élément
+            <code>&lt;html&gt;</code>.
+          </li>
+          <li>
+            S’assurer que tous les liens sont explicites hors contexte et éviter les intitulés ambigus comme « cliquez
+            ici ».
+          </li>
+          <li>
+            Garantir l’accessibilité des formulaires (labels associés, indications d’erreur, regroupement logique).
+          </li>
+          <li>Permettre la navigation et l’utilisation complète du site au clavier (sans souris).</li>
+          <li>Contrôler la visibilité du focus clavier sur tous les éléments interactifs.</li>
+          <li>Éviter l’utilisation exclusive de la couleur pour transmettre une information ou une action.</li>
+          <li>Vérifier la cohérence de l’ordre de tabulation et la logique de navigation.</li>
+          <li>
+            Limiter l’utilisation des contenus animés, clignotants ou défilants, ou prévoir un moyen de les arrêter.
+          </li>
+          <li>
+            Utiliser les rôles ARIA et les attributs ARIA uniquement en complément de la sémantique HTML, jamais en
+            remplacement.
+          </li>
+          <li>
+            Tester l’accessibilité avec des technologies d’assistance (lecteurs d’écran, etc.) et différents
+            navigateurs.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer class="page-footer">
+      <div class="container">
+        <img
+          src="https://avatars.githubusercontent.com/u/178393891?s=400&u=9809505d66bcc430eb6181c54fb225b24d31de29&v=4"
+          alt="Logo de votre organisation"
+          class="footer-logo"
+        />
+        <p class="footer-text">Rapport d'audit d'accessibilité généré par a11ylint</p>
+      </div>
+    </footer>
+  </body>
+</html>
