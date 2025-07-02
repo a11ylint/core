@@ -1,6 +1,6 @@
 import { LogMessageParams, Mode } from '../types.js';
 
-export type SvgImageAreaProps = {
+export type SvgImageArea = {
   type: 'img' | 'area' | 'svg';
   alt?: string;
   title?: string;
@@ -17,12 +17,12 @@ export class RGAA1 {
     this.mode = mode;
   }
 
-  RGAA11(elements: Array<SvgImageAreaProps>): LogMessageParams[]; // For 'playwright' mode
+  RGAA11(elements: Array<SvgImageArea>): LogMessageParams[]; // For 'playwright' mode
 
   RGAA11(elements: Array<HTMLImageElement | HTMLAreaElement | SVGSVGElement>): LogMessageParams[]; // For 'browser' mode
 
   public RGAA11(
-    elements: Array<SvgImageAreaProps | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
+    elements: Array<SvgImageArea | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
   ): LogMessageParams[] {
     switch (this.mode) {
       case 'dom':
@@ -35,7 +35,7 @@ export class RGAA1 {
   }
 
   private RGAA11_dom(
-    elements: Array<SvgImageAreaProps | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
+    elements: Array<SvgImageArea | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
   ): LogMessageParams[] {
     const wrongElement: Array<LogMessageParams> = [];
     elements.forEach(el => {
@@ -82,11 +82,11 @@ export class RGAA1 {
   }
 
   private RGAA11_virtual(
-    elements: Array<SvgImageAreaProps | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
+    elements: Array<SvgImageArea | HTMLImageElement | HTMLAreaElement | SVGSVGElement>,
   ): LogMessageParams[] {
     const wrongElement: Array<LogMessageParams> = [];
     elements.forEach(el => {
-      const element = el as SvgImageAreaProps;
+      const element = el as SvgImageArea;
       const { alt, title, ariaLabel, ariaLabelledby, outerHTML, role, type } = element;
       switch (type) {
         case 'img':
