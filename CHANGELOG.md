@@ -1,3 +1,9 @@
+## [1.0.0-alpha.3](https://github.com/a11ylint/core/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-07-02)
+
+### Features
+
+* adjusting index.ts for exporting and adding core.ts ([08ff3a0](https://github.com/a11ylint/core/commit/08ff3a01cea1c9bb08004f3ca1dc07fb3a52b457))
+
 ## [1.0.0-alpha.2](https://github.com/a11ylint/core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2025-07-02)
 
 ### Bug Fixes
