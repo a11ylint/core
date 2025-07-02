@@ -33,6 +33,9 @@ jobs:
       - name: Config npm
         run: npm config set access=public
 
+      - name: Build package
+        run: npm run build
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
