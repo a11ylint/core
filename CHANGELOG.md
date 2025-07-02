@@ -1,3 +1,9 @@
+## [1.0.0-alpha.2](https://github.com/a11ylint/core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2025-07-02)
+
+### Bug Fixes
+
+* ensure build directory is published by adding build step to release workflow ([48a5415](https://github.com/a11ylint/core/commit/48a54152a899452d08b227a6d37f2e6e36185211))
+
 ## 1.0.0-alpha.1 (2025-07-02)
 
 * test(Audit): adding an audit system in HTML,JSON and CLI ([3588659](https://github.com/a11ylint/core/commit/3588659))
