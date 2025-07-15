@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname as pathDirname } from 'path';
 import { fileURLToPath } from 'url';
 import { LogMessageParams } from 'src/types.js';
+import { DICTIONARY } from 'src/utils/dictonnary.js';
 
 export class AuditGenerator {
   public generateHtmlAudit({
@@ -24,12 +25,14 @@ export class AuditGenerator {
       encoding: 'utf-8',
     });
     const mappedResultsObject = this.mapTemplateObject(results);
+    const compliance = this.mapAuditDataCompliance(mappedResultsObject);
     const generatedTemplate = Handlebars.compile(templateHtml);
     const generateResult = generatedTemplate({
       audits: mappedResultsObject,
       baseUrl,
       website: baseUrl.replace(/https?:\/\//, ''),
       style: css,
+      rgaaCompliance: compliance,
     });
     writeFileSync(baseUrl ? `${baseUrl.replace(/https?:\/\//, '')}.html` : baseUrl, generateResult);
     console.info(
@@ -93,5 +96,52 @@ export class AuditGenerator {
       mappedResultsObject = { ...mappedResultsObject, ...{ [result.url]: { ...mappedResult } } };
     }
     return mappedResultsObject;
+  }
+
+  private mapAuditDataCompliance(
+    mappedResultsObject: Record<
+      string,
+      {
+        [key: string]: {
+          issues: Array<{ element: string }>;
+        };
+      }
+    >,
+  ) {
+    const compliance: Record<
+      string,
+      {
+        compliance: boolean;
+        criteriaCount: number;
+        percentage?: number;
+        ruleInError?: string[];
+      }
+    > = {};
+    Object.entries(mappedResultsObject).forEach(([, rules]) => {
+      Object.keys(rules).forEach(rule => {
+        Object.entries(DICTIONARY).forEach(([category, subRules]) => {
+          const ruleNumber = category.split(' - ')[1];
+          if (subRules.includes(rule) && rules[rule]?.issues.length > 0) {
+            compliance[ruleNumber] = {
+              compliance: false,
+              criteriaCount: subRules.length,
+              ruleInError: compliance[ruleNumber]?.ruleInError || [],
+            };
+            compliance[ruleNumber].ruleInError = [...new Set(compliance[ruleNumber].ruleInError).add(rule)];
+            compliance[ruleNumber].percentage = Math.round(
+              ((subRules.length - (compliance[ruleNumber]?.ruleInError?.length ?? 0)) / subRules.length) * 100,
+            );
+          } else if (compliance[ruleNumber] === undefined) {
+            compliance[ruleNumber] = {
+              compliance: true,
+              criteriaCount: subRules.length,
+              percentage: 100,
+              ruleInError: [],
+            };
+          }
+        });
+      });
+    });
+    return compliance;
   }
 }
