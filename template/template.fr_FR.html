@@ -28,6 +28,36 @@
     </header>
 
     <main class="container">
+      <section class="issue-section">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%; text-align: center">Thématique RGAA testé</th>
+              <th style="width: 8%; text-align: center">Nombre de critères testé</th>
+              <th style="width: 12%; text-align: center">Validité A11YLINT</th>
+              <th style="width: 12%; text-align: center">Conformités RGAA</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each rgaaCompliance}}
+            <tr>
+              <td style="text-align: center">{{@key}}</td>
+              <td style="text-align: center">
+                <span class="badge criteria-count">{{this.criteriaCount}}</span>
+              </td>
+              <td style="text-align: center">
+                <span class="badge status-non-conforme"> {{this.percentage}}% </span>
+              </td>
+              <td style="text-align: center">
+                <span class="badge status-non-conforme">
+                  {{#if this.compliance}} Conforme {{else}} Non conforme {{/if}}
+                </span>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </section>
       {{#each audits}}
       <section class="audit-summary" style="page-break-before: always">
         <h2>Résumé de l'audit pour la page {{@key}}</h2>
