@@ -1,0 +1,10 @@
+/**
+ * This file is part of the ay11lint project.
+ * It provides the dictionary of RGAA rules.
+ */
+export const DICTIONARY: Record<string, string[]> = Object.freeze({
+  'RGAA - 1': ['RGAA - 1.1.1', 'RGAA - 1.1.2', 'RGAA - 1.1.5'],
+  'RGAA - 2': ['RGAA - 2.1.1', 'RGAA - 2.2.1'],
+  'RGAA - 3': [],
+  'RGAA - 8': ['RGAA - 8.1.1', 'RGAA - 8.1.3', 'RGAA - 8.3', 'RGAA - 8.5'],
+});
