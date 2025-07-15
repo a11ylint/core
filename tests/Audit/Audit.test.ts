@@ -16,7 +16,7 @@ describe('AuditGenerator', () => {
     {
       url: 'https://example.com',
       result: {
-        'RGAA-1.1.1': [
+        'RGAA - 1.1.1': [
           {
             element: '<img src="test.jpg">',
             rule: 'RGAA - 1.1.1',
@@ -30,7 +30,7 @@ describe('AuditGenerator', () => {
             message: 'img elements should have alt, aria-label, title or aria-labelledby',
           },
         ],
-        'RGAA-8.1.1': [
+        'RGAA - 8.1.1': [
           {
             element: '<div></div>',
             rule: 'RGAA - 8.1.1',
@@ -43,7 +43,7 @@ describe('AuditGenerator', () => {
     {
       url: 'https://example.com/page2',
       result: {
-        'RGAA-2.1.1': [
+        'RGAA - 2.1.1': [
           {
             element: '<frame src="content.html"></frame>',
             rule: 'RGAA - 2.1.1',
@@ -97,7 +97,7 @@ describe('AuditGenerator', () => {
       const fileContent = fs.readFileSync(expectedFilename, 'utf-8');
       expect(fileContent).toContain('<!doctype html>');
       expect(fileContent).toContain("Audit d'accessibilité RGAA du site audit");
-      expect(fileContent).toContain('RGAA-1.1.1');
+      expect(fileContent).toContain('RGAA - 1.1.1');
       expect(fileContent).toContain('img elements should have alt, aria-label, title or aria-labelledby');
     });
 
@@ -205,8 +205,8 @@ describe('AuditGenerator', () => {
       generatedFiles.push(expectedFilename);
 
       expect(result).toHaveProperty('https://example.com');
-      expect(result['https://example.com']).toHaveProperty('RGAA-1.1.1');
-      expect(result['https://example.com']['RGAA-1.1.1']).toStrictEqual({
+      expect(result['https://example.com']).toHaveProperty('RGAA - 1.1.1');
+      expect(result['https://example.com']['RGAA - 1.1.1']).toStrictEqual({
         message: 'img elements should have alt, aria-label, title or aria-labelledby',
         ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#1.1.1',
         issues: [{ element: '<img src="test.jpg">' }, { element: '<img src="test2.jpg">' }],
@@ -256,7 +256,7 @@ describe('AuditGenerator', () => {
       const expectedFilename = 'audit.json';
       generatedFiles.push(expectedFilename);
 
-      const rgaaRule = result['https://example.com']['RGAA-1.1.1'];
+      const rgaaRule = result['https://example.com']['RGAA - 1.1.1'];
       expect(rgaaRule.issues).toHaveLength(2);
       expect(rgaaRule.hasDomElement).toBeTruthy();
     });
@@ -382,7 +382,7 @@ describe('AuditGenerator', () => {
 
       expect(Object.keys(result)).toContain('https://example.com');
       expect(Object.keys(result)).toContain('https://example.com/page2');
-      expect(result['https://example.com/page2']['RGAA-2.1.1']).toBeDefined();
+      expect(result['https://example.com/page2']['RGAA - 2.1.1']).toBeDefined();
     });
 
     it('should preserve URL protocols in output filenames', () => {
