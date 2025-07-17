@@ -1,3 +1,9 @@
+## [1.0.0-alpha.5](https://github.com/a11ylint/core/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2025-07-17)
+
+### Bug Fixes
+
+* **Audit:** use relative import and not absolute ([61bc427](https://github.com/a11ylint/core/commit/61bc42721cd70c24556c89bf1aa5746ccd7a3c0a))
+
 ## [1.0.0-alpha.4](https://github.com/a11ylint/core/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-07-17)
 
 ### Features
