@@ -1,3 +1,9 @@
+## [1.0.0-alpha.4](https://github.com/a11ylint/core/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-07-17)
+
+### Features
+
+* **Audit:** adding success rate, rgaa compliance, number of criteria tested ([5df4fb6](https://github.com/a11ylint/core/commit/5df4fb651d72ab9cc40fc854205ce10e2a6a5141))
+
 ## [1.0.0-alpha.3](https://github.com/a11ylint/core/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-07-02)
 
 ### Features
