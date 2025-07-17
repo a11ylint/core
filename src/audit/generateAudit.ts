@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname as pathDirname } from 'path';
 import { fileURLToPath } from 'url';
 import { LogMessageParams } from 'src/types.js';
-import { DICTIONARY } from 'src/utils/dictionary.js';
+import { DICTIONARY } from '../utils/dictionary.js';
 
 export class AuditGenerator {
   public generateHtmlAudit({
