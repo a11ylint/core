@@ -15,8 +15,9 @@ export default defineConfig(({ mode }) => {
       clearMocks: true,
       css: false,
       include: ['tests/**/*.{test,spec}.[jt]s?(x)'],
-      reporters: ['default', 'junit'],
+      reporters: ['default', 'junit', 'vitest-sonar-reporter'],
       outputFile: {
+        'vitest-sonar-reporter': 'sonar-report.xml',
         junit: 'junit-report.xml',
       },
       poolOptions: {
