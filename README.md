@@ -129,11 +129,17 @@ const results = core.run({
 ```
 
 ### Roadmap
-- [ ] Extended RGAA rule coverage
+
+📋 **[View detailed project roadmap](./docs/roadmap.md)**
+
+Our comprehensive roadmap includes:
+- [ ] Extended RGAA rule coverage (106 rules planned)
 - [ ] Integration with popular testing frameworks
 - [ ] Browser extension for real-time testing
 - [ ] Advanced color contrast algorithms
 - [ ] Multi-language support beyond French
+
+Track our progress with priority-based implementation, GitHub issues integration, and automated progress tracking.
 
 ## 📚 Documentation
 
