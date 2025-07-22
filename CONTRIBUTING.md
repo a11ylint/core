@@ -42,6 +42,8 @@ We will then take care of the issue as soon as possible.
 4. **Push** your work to your fork
 5. Submit a **Pull request** so we can review your proposal
 
+If you want to work on an issue, please leave a comment on the issue so that an admin can assign it to you.
+
 ## Commit conventions
 
 We follow the conventions of [Conventional Commits](https://www.conventionalcommits.org/). This means that the commit message must be structured as follows:
