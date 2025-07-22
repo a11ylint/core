@@ -42,7 +42,9 @@ jobs:
         run: npm ci
 
       - name: Config npm
-        run: npm config set access=public
+        run: |
+          npm config set access=public
+          npm config set provenance=true
 
       - name: Build package
         run: npm run build
