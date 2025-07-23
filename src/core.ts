@@ -2,6 +2,7 @@ import { AuditGenerator } from './audit/generateAudit.js';
 import { RGAA1, SvgImageArea } from './rules/RGAA1.js';
 import { RGAA2 } from './rules/RGAA2.js';
 import { RGAA6 } from './rules/RGAA6.js';
+import { ConstratsElement, RGAA3, VirtualConstratsElement } from './rules/RGAA3.js';
 import { RGAA8 } from './rules/RGAA8.js';
 import { LogMessageParams, Mode } from './types.js';
 
@@ -12,6 +13,7 @@ type runParams = {
   images?: Array<SvgImageArea>;
   frames?: Array<HTMLIFrameElement | HTMLFrameElement>;
   links?: Array<HTMLAnchorElement | HTMLElement>;
+  colorsElements?: Array<ConstratsElement | VirtualConstratsElement>;
 };
 
 type AuditOptionsBase = {
@@ -32,11 +34,20 @@ type AuditOptionsNoHtml = AuditOptionsBase & {
 type AuditOptions = AuditOptionsHtml | AuditOptionsNoHtml;
 
 export class Core {
-  public run({ mode, document, customIframeBannedWords = [], images = [], frames = [], links = [] }: runParams) {
+  public run({
+    mode,
+    document,
+    customIframeBannedWords = [],
+    images = [],
+    frames = [],
+    links = [],
+    colorsElements = [],
+  }: runParams) {
     const rgaa1 = new RGAA1(mode);
     const rgaa2 = new RGAA2(mode);
     const rgaa6 = new RGAA6();
     const rgaa8 = new RGAA8();
+    const rgaa3 = new RGAA3(mode);
 
     // run all rules and return the result
     const wrongElement = rgaa1.RGAA11(images);
@@ -49,19 +60,70 @@ export class Core {
     const wrongDoctype = rgaa8.RGAA81([document]);
     const wrongLang = rgaa8.RGAA83([document]);
     const wrongTitle = rgaa8.RGAA85([document]);
+    const wrongContrasts = rgaa3.RGAA32(colorsElements);
 
-    // create an object with the rule and the result associated
-    const result = {
-      'RGAA - 1.1.1': wrongElement,
-      'RGAA - 2.1.1': wrongFrames,
-      'RGAA - 2.2.1': wrongFramesBannedWords,
-      'RGAA - 6.2.1': wrongLinks,
-      'RGAA - 8.1.1': wrongDoctype,
-      'RGAA - 8.3': wrongLang,
-      'RGAA - 8.5': wrongTitle,
-    };
+    const allResults = [
+      ...wrongElement,
+      ...wrongFrames,
+      ...wrongFramesBannedWords,
+      ...wrongDoctype,
+      ...wrongLang,
+      ...wrongTitle,
+      ...wrongContrasts,
+      ...wrongLinks,
+    ];
 
-    return result;
+    const groupedResults = allResults.reduce<{ [key: string]: LogMessageParams[] }>((acc, res) => {
+      if (res?.rule) {
+        acc[res.rule] = acc[res.rule] ? [...acc[res.rule], res] : [res];
+      }
+      return acc;
+    }, {});
+
+    const sortedKeys = Object.keys(groupedResults).sort((a, b) => {
+      const parseRule = (rule: string) => {
+        // Extraction sans regex : chercher "- " puis prendre les chiffres et points jusqu'au premier caractère non-numérique
+        const dashIndex = rule.indexOf('- ');
+        if (dashIndex === -1) return [];
+
+        const afterDash = rule.substring(dashIndex + 2);
+        let ruleNumber = '';
+
+        // Extraire les caractères valides (chiffres et points)
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const char of afterDash) {
+          if ((char >= '0' && char <= '9') || char === '.') {
+            ruleNumber += char;
+          } else {
+            break;
+          }
+        }
+
+        if (!ruleNumber) return [];
+
+        // Split par point et convertir en nombres
+        return ruleNumber.split('.').map(part => {
+          const num = parseInt(part, 10);
+          return Number.isNaN(num) ? 0 : num;
+        });
+      };
+      const aParts = parseRule(a);
+      const bParts = parseRule(b);
+      for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+        const aVal = aParts[i] ?? 0;
+        const bVal = bParts[i] ?? 0;
+        if (aVal !== bVal) return aVal - bVal;
+      }
+      return 0;
+    });
+
+    const sortedResults = sortedKeys.reduce<{ [key: string]: LogMessageParams[] }>((acc, key) => {
+      acc[key] = groupedResults[key];
+      return acc;
+    }, {});
+
+    return sortedResults;
   }
 
   // make dynamic type
