@@ -1,14 +1,96 @@
 import { Color } from 'src/utils/color.js';
-import { LogMessageParams } from '../types.js';
+import { LogMessageParams, Mode } from '../types.js';
 
 export type ConstratsElement = {
   backgroundElement: HTMLElement;
   foregroundElement: HTMLElement;
 };
 
+export type VirtualConstratsElement = {
+  backgroundColor: string;
+  textColor: string;
+  fontSize: string;
+  fontWeight: string;
+  outerHTML: string;
+};
+
 export class RGAA3 {
-  public RGAA32(elements: Array<ConstratsElement>) {
-    const wrongContrats: Array<LogMessageParams> = [];
+  private readonly mode: Mode;
+
+  constructor(mode: Mode) {
+    this.mode = mode;
+  }
+
+  public RGAA32(elements: Array<ConstratsElement | VirtualConstratsElement>) {
+    switch (this.mode) {
+      case 'dom':
+        return this.RGAA32_Dom(elements as Array<ConstratsElement>);
+      case 'virtual':
+        return this.RGAA32_Virtual(elements as Array<VirtualConstratsElement>);
+      default:
+        throw new Error('Mode not supported for RGAA3');
+    }
+  }
+
+  private RGAA32_Virtual(elements: Array<VirtualConstratsElement>): LogMessageParams[] {
+    const wrongContrasts: Array<LogMessageParams> = [];
+
+    elements.forEach(elementsToCheck => {
+      const { backgroundColor, textColor, fontSize, fontWeight, outerHTML } = elementsToCheck;
+
+      const bgColor = Color.getRGBFromCssProperties(backgroundColor);
+      const fgColor = Color.getRGBFromCssProperties(textColor);
+      const textSize = Number(fontSize.split('px')[0]);
+      const isBold = Number(fontWeight) >= 600;
+
+      const ratio = Color.contrast(bgColor, fgColor);
+
+      if (textSize < 24 && !isBold && ratio < 4.5) {
+        wrongContrasts.push({
+          element: outerHTML,
+          rule: 'RGAA - 3.2.1',
+          ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.1',
+          message:
+            'Color contrasts for non-bold element with fontSize inferior to 24px should have at minimal 4.5 in contrast',
+        });
+      }
+
+      if (textSize < 18.5 && isBold && ratio < 4.5) {
+        wrongContrasts.push({
+          element: outerHTML,
+          rule: 'RGAA - 3.2.2',
+          ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.2',
+          message:
+            'Color contrasts for bold element with fontSize inferior to 18.5px should have at minimal 4.5 in contrast',
+        });
+      }
+
+      if (textSize >= 24 && !isBold && ratio < 3) {
+        wrongContrasts.push({
+          element: outerHTML,
+          rule: 'RGAA - 3.2.3',
+          ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.3',
+          message:
+            'Color contrasts for non-bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
+        });
+      }
+
+      if (textSize >= 18.5 && isBold && ratio < 3) {
+        wrongContrasts.push({
+          element: outerHTML,
+          rule: 'RGAA - 3.2.4',
+          ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.4',
+          message:
+            'Color contrasts for bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
+        });
+      }
+    });
+
+    return wrongContrasts;
+  }
+
+  private RGAA32_Dom(elements: Array<ConstratsElement>) {
+    const wrongcontrasts: Array<LogMessageParams> = [];
 
     elements.forEach(elementsToCheck => {
       const backgroundColor = Color.getRGBFromCssProperties(
@@ -21,45 +103,45 @@ export class RGAA3 {
       const ratio = Color.contrast(backgroundColor, textColor);
 
       if (textSize < 24 && !isBold && ratio < 4.5) {
-        wrongContrats.push({
+        wrongcontrasts.push({
           element: elementsToCheck.foregroundElement.outerHTML,
           rule: 'RGAA - 3.2.1',
           ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.1',
           message:
-            'Color contrats for non-bold element with fontSize inferior to 24px should have at minimal 4.5 in contrast',
+            'Color contrasts for non-bold element with fontSize inferior to 24px should have at minimal 4.5 in contrast',
         });
       }
 
       if (textSize < 18.5 && isBold && ratio < 4.5) {
-        wrongContrats.push({
+        wrongcontrasts.push({
           element: elementsToCheck.foregroundElement.outerHTML,
           rule: 'RGAA - 3.2.2',
           ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.2',
           message:
-            'Color contrats for bold element with fontSize inferior to 18.5px should have at minimal 4.5 in contrast',
+            'Color contrasts for bold element with fontSize inferior to 18.5px should have at minimal 4.5 in contrast',
         });
       }
 
       if (textSize >= 24 && !isBold && ratio < 3) {
-        wrongContrats.push({
+        wrongcontrasts.push({
           element: elementsToCheck.foregroundElement.outerHTML,
           rule: 'RGAA - 3.2.3',
           ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.3',
           message:
-            'Color contrats for non-bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
+            'Color contrasts for non-bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
         });
       }
 
       if (textSize >= 18.5 && isBold && ratio < 3) {
-        wrongContrats.push({
+        wrongcontrasts.push({
           element: elementsToCheck.foregroundElement.outerHTML,
           rule: 'RGAA - 3.2.4',
           ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#3.2.4',
           message:
-            'Color contrats for bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
+            'Color contrasts for bold element with fontSize superior or equal to 24px should have at minimal 3 in contrast',
         });
       }
     });
-    return wrongContrats;
+    return wrongcontrasts;
   }
 }
