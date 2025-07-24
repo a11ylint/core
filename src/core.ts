@@ -1,6 +1,7 @@
 import { AuditGenerator } from './audit/generateAudit.js';
 import { RGAA1, SvgImageArea } from './rules/RGAA1.js';
 import { RGAA2 } from './rules/RGAA2.js';
+import { RGAA6 } from './rules/RGAA6.js';
 import { RGAA8 } from './rules/RGAA8.js';
 import { LogMessageParams, Mode } from './types.js';
 
@@ -10,6 +11,7 @@ type runParams = {
   customIframeBannedWords?: Array<string>;
   images?: Array<SvgImageArea>;
   frames?: Array<HTMLIFrameElement | HTMLFrameElement>;
+  links?: Array<HTMLAnchorElement | HTMLElement>;
 };
 
 type AuditOptionsBase = {
@@ -30,9 +32,10 @@ type AuditOptionsNoHtml = AuditOptionsBase & {
 type AuditOptions = AuditOptionsHtml | AuditOptionsNoHtml;
 
 export class Core {
-  public run({ mode, document, customIframeBannedWords = [], images = [], frames = [] }: runParams) {
+  public run({ mode, document, customIframeBannedWords = [], images = [], frames = [], links = [] }: runParams) {
     const rgaa1 = new RGAA1(mode);
     const rgaa2 = new RGAA2(mode);
+    const rgaa6 = new RGAA6();
     const rgaa8 = new RGAA8();
 
     // run all rules and return the result
@@ -42,6 +45,7 @@ export class Core {
       frames,
       customBannedWords: customIframeBannedWords,
     });
+    const wrongLinks = rgaa6.RGAA62(links);
     const wrongDoctype = rgaa8.RGAA81([document]);
     const wrongLang = rgaa8.RGAA83([document]);
     const wrongTitle = rgaa8.RGAA85([document]);
@@ -51,6 +55,7 @@ export class Core {
       'RGAA - 1.1.1': wrongElement,
       'RGAA - 2.1.1': wrongFrames,
       'RGAA - 2.2.1': wrongFramesBannedWords,
+      'RGAA - 6.2.1': wrongLinks,
       'RGAA - 8.1.1': wrongDoctype,
       'RGAA - 8.3': wrongLang,
       'RGAA - 8.5': wrongTitle,
