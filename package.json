@@ -62,7 +62,7 @@
     "tsc-files": "^1.1.4",
     "typescript": "^5.8.3",
     "vite": "^7.0.6",
-    "vite-tsconfig-paths": "^5.0.1",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.1",
     "vitest-sonar-reporter": "^2.0.1"
   },
