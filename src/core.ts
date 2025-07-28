@@ -3,6 +3,7 @@ import { RGAA1, SvgImageArea } from './rules/RGAA1.js';
 import { RGAA2 } from './rules/RGAA2.js';
 import { RGAA6 } from './rules/RGAA6.js';
 import { ConstratsElement, RGAA3, VirtualContrastsElement } from './rules/RGAA3.js';
+import { RGAA11, FormFieldElement } from './rules/RGAA11.js';
 import { RGAA8 } from './rules/RGAA8.js';
 import { LogMessageParams, Mode } from './types.js';
 
@@ -14,6 +15,7 @@ type runParams = {
   frames?: Array<HTMLIFrameElement | HTMLFrameElement>;
   links?: Array<HTMLAnchorElement | HTMLElement>;
   colorsElements?: Array<ConstratsElement | VirtualContrastsElement>;
+  formFields?: Array<FormFieldElement | HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
 };
 
 type AuditOptionsBase = {
@@ -42,14 +44,15 @@ export class Core {
     frames = [],
     links = [],
     colorsElements = [],
+    formFields = [],
   }: runParams) {
     const rgaa1 = new RGAA1(mode);
     const rgaa2 = new RGAA2(mode);
     const rgaa6 = new RGAA6();
     const rgaa8 = new RGAA8();
     const rgaa3 = new RGAA3(mode);
+    const rgaa11 = new RGAA11(mode);
 
-    // run all rules and return the result
     const wrongElement = rgaa1.RGAA11(images);
     const wrongFrames = rgaa2.RGAA211(frames);
     const wrongFramesBannedWords = rgaa2.RGAA221({
@@ -61,6 +64,8 @@ export class Core {
     const wrongLang = rgaa8.RGAA83([document]);
     const wrongTitle = rgaa8.RGAA85([document]);
     const wrongContrasts = rgaa3.RGAA32(colorsElements);
+    const wrongFormFieldsLabels = rgaa11.RGAA111(formFields);
+    const wrongFormFieldsLabelStructure = rgaa11.RGAA112(formFields);
 
     const allResults = [
       ...wrongElement,
@@ -71,6 +76,8 @@ export class Core {
       ...wrongTitle,
       ...wrongContrasts,
       ...wrongLinks,
+      ...wrongFormFieldsLabels,
+      ...wrongFormFieldsLabelStructure,
     ];
 
     const groupedResults = allResults.reduce<{ [key: string]: LogMessageParams[] }>((acc, res) => {
@@ -82,14 +89,11 @@ export class Core {
 
     const sortedKeys = Object.keys(groupedResults).sort((a, b) => {
       const parseRule = (rule: string) => {
-        // Extraction sans regex : chercher "- " puis prendre les chiffres et points jusqu'au premier caractère non-numérique
         const dashIndex = rule.indexOf('- ');
         if (dashIndex === -1) return [];
 
         const afterDash = rule.substring(dashIndex + 2);
         let ruleNumber = '';
-
-        // Extraire les caractères valides (chiffres et points)
 
         // eslint-disable-next-line no-restricted-syntax
         for (const char of afterDash) {
@@ -102,7 +106,6 @@ export class Core {
 
         if (!ruleNumber) return [];
 
-        // Split par point et convertir en nombres
         return ruleNumber.split('.').map(part => {
           const num = parseInt(part, 10);
           return Number.isNaN(num) ? 0 : num;
@@ -126,7 +129,6 @@ export class Core {
     return sortedResults;
   }
 
-  // make dynamic type
   /**
    * Generates an audit report based on the results of the accessibility checks.
    * @param {Object} params - The parameters for generating the audit.
