@@ -2,7 +2,7 @@ import { AuditGenerator } from './audit/generateAudit.js';
 import { RGAA1, SvgImageArea } from './rules/RGAA1.js';
 import { RGAA2 } from './rules/RGAA2.js';
 import { RGAA6 } from './rules/RGAA6.js';
-import { ConstratsElement, RGAA3, VirtualConstratsElement } from './rules/RGAA3.js';
+import { ConstratsElement, RGAA3, VirtualContrastsElement } from './rules/RGAA3.js';
 import { RGAA8 } from './rules/RGAA8.js';
 import { LogMessageParams, Mode } from './types.js';
 
@@ -13,7 +13,7 @@ type runParams = {
   images?: Array<SvgImageArea>;
   frames?: Array<HTMLIFrameElement | HTMLFrameElement>;
   links?: Array<HTMLAnchorElement | HTMLElement>;
-  colorsElements?: Array<ConstratsElement | VirtualConstratsElement>;
+  colorsElements?: Array<ConstratsElement | VirtualContrastsElement>;
 };
 
 type AuditOptionsBase = {

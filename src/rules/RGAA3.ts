@@ -6,7 +6,7 @@ export type ConstratsElement = {
   foregroundElement: HTMLElement;
 };
 
-export type VirtualConstratsElement = {
+export type VirtualContrastsElement = {
   backgroundColor: string;
   textColor: string;
   fontSize: string;
@@ -21,18 +21,18 @@ export class RGAA3 {
     this.mode = mode;
   }
 
-  public RGAA32(elements: Array<ConstratsElement | VirtualConstratsElement>) {
+  public RGAA32(elements: Array<ConstratsElement | VirtualContrastsElement>) {
     switch (this.mode) {
       case 'dom':
         return this.RGAA32_Dom(elements as Array<ConstratsElement>);
       case 'virtual':
-        return this.RGAA32_Virtual(elements as Array<VirtualConstratsElement>);
+        return this.RGAA32_Virtual(elements as Array<VirtualContrastsElement>);
       default:
         throw new Error('Mode not supported for RGAA3');
     }
   }
 
-  private RGAA32_Virtual(elements: Array<VirtualConstratsElement>): LogMessageParams[] {
+  private RGAA32_Virtual(elements: Array<VirtualContrastsElement>): LogMessageParams[] {
     const wrongContrasts: Array<LogMessageParams> = [];
 
     elements.forEach(elementsToCheck => {
