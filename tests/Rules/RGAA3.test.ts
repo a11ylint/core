@@ -1,5 +1,5 @@
 import { expect, it, describe } from 'vitest';
-import { ConstratsElement, RGAA3, VirtualConstratsElement } from '../../src/rules/RGAA3';
+import { ConstratsElement, RGAA3, VirtualContrastsElement } from '../../src/rules/RGAA3';
 
 const ElementsWithWrongContrasts: Array<ConstratsElement> = [
   {
@@ -97,7 +97,7 @@ const ElementWithGoodConstrats: Array<ConstratsElement> = [
   },
 ];
 
-const VirtualElementsWithWrongContrasts: Array<VirtualConstratsElement> = [
+const VirtualElementsWithWrongContrasts: Array<VirtualContrastsElement> = [
   {
     backgroundColor: 'rgb(255, 255, 255)',
     textColor: 'rgb(138, 138, 255)',
@@ -135,7 +135,7 @@ const VirtualElementsWithWrongContrasts: Array<VirtualConstratsElement> = [
   },
 ];
 
-const VirtualElementWithGoodConstrats: Array<VirtualConstratsElement> = [
+const VirtualElementWithGoodConstrats: Array<VirtualContrastsElement> = [
   {
     backgroundColor: 'rgb(255, 255, 255)',
     textColor: 'rgb(97, 97, 255)',
