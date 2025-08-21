@@ -23,7 +23,7 @@ Stay tuned for updates as we build a robust and cohesive accessibility testing s
 
 - **RGAA Compliance Testing**: Automated testing for French accessibility standards
 - **Multiple Output Formats**: Generate reports in HTML, JSON, or CLI formats
-- **Comprehensive Rule Coverage**: Support for RGAA 1.x, 2.x, 3.x, and 8.x rules
+- **Comprehensive Rule Coverage**: Support for RGAA 1.x, 2.x, 3.x, 6.x, 8.x, and 9.x rules
 - **DOM & Virtual Testing**: Works with both real DOM elements and virtual representations
 - **Color Contrast Analysis**: Advanced color contrast calculations following RGAA guidelines
 - **Detailed Reporting**: Get actionable insights with specific element references and fix suggestions
@@ -50,6 +50,9 @@ const results = a11ylint.run({
   document: document, // Your DOM document
   images: [], // Array of image elements to test
   frames: [], // Array of frame/iframe elements to test
+  links: [], // Array of link elements to test
+  colorsElements: [], // Array of elements for color contrast testing
+  headings: [], // Array of heading elements to test (h1-h6 or role="heading")
   customIframeBannedWords: ['frame', 'iframe'] // Optional custom banned words
 });
 
@@ -83,7 +86,9 @@ a11ylint.generateAudit({
 | **RGAA 1** | 1.1.1, 1.1.2, 1.1.5 | Image accessibility (alt text, area elements, SVG) |
 | **RGAA 2** | 2.1.1, 2.2.1 | Frame accessibility (titles, relevance) |
 | **RGAA 3** | 3.2.x | Color contrast requirements |
+| **RGAA 6** | 6.2.1 | Link accessibility (labels, titles) |
 | **RGAA 8** | 8.1.1, 8.1.3, 8.3, 8.5 | Document structure (doctype, language, title) |
+| **RGAA 9** | 9.1.1, 9.1.3 | Heading structure and hierarchy |
 
 ## 📈 Report Generation
 
@@ -110,9 +115,16 @@ a11ylint.generateAudit({
 ### DOM Mode
 Test real DOM elements in browser environments:
 ```typescript
+// Collect heading elements from the DOM
+const headings = [
+  ...document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
+  ...document.querySelectorAll('[role="heading"]')
+];
+
 const results = a11ylint.run({
   mode: 'dom',
   document: document,
+  headings: headings,
   // ... other options
 });
 ```
@@ -120,10 +132,32 @@ const results = a11ylint.run({
 ### Virtual Mode
 Test serialized element data (perfect for server-side testing):
 ```typescript
+import { HeadingVirtualElement } from '@a11ylint/core';
+
+const virtualHeadings: HeadingVirtualElement[] = [
+  {
+    type: 'heading',
+    tagName: 'H1',
+    textContent: 'Main Title',
+    outerHTML: '<h1>Main Title</h1>',
+    index: 0
+  },
+  {
+    type: 'heading',
+    tagName: 'DIV',
+    role: 'heading',
+    ariaLevel: '2',
+    textContent: 'Custom heading',
+    outerHTML: '<div role="heading" aria-level="2">Custom heading</div>',
+    index: 1
+  }
+];
+
 const results = core.run({
   mode: 'virtual',
   document: virtualDocument,
   images: virtualImageElements,
+  headings: virtualHeadings,
   // ... other options
 });
 ```
