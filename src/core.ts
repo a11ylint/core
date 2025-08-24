@@ -5,6 +5,7 @@ import { RGAA6 } from './rules/RGAA6.js';
 import { ConstratsElement, RGAA3, VirtualContrastsElement } from './rules/RGAA3.js';
 import { RGAA11, FormFieldElement } from './rules/RGAA11.js';
 import { RGAA8 } from './rules/RGAA8.js';
+import { RGAA9, HeadingVirtualElement } from './rules/RGAA9.js';
 import { LogMessageParams, Mode } from './types.js';
 
 type runParams = {
@@ -16,6 +17,7 @@ type runParams = {
   links?: Array<HTMLAnchorElement | HTMLElement>;
   colorsElements?: Array<ConstratsElement | VirtualContrastsElement>;
   formFields?: Array<FormFieldElement | HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
+  headings?: Array<HeadingVirtualElement | HTMLHeadingElement | HTMLElement>;
 };
 
 type AuditOptionsBase = {
@@ -45,6 +47,7 @@ export class Core {
     links = [],
     colorsElements = [],
     formFields = [],
+    headings = [],
   }: runParams) {
     const rgaa1 = new RGAA1(mode);
     const rgaa2 = new RGAA2(mode);
@@ -52,6 +55,7 @@ export class Core {
     const rgaa8 = new RGAA8();
     const rgaa3 = new RGAA3(mode);
     const rgaa11 = new RGAA11(mode);
+    const rgaa9 = new RGAA9();
 
     const wrongElement = rgaa1.RGAA11(images);
     const wrongFrames = rgaa2.RGAA211(frames);
@@ -66,6 +70,8 @@ export class Core {
     const wrongContrasts = rgaa3.RGAA32(colorsElements);
     const wrongFormFieldsLabels = rgaa11.RGAA111(formFields);
     const wrongFormFieldsLabelStructure = rgaa11.RGAA112(formFields);
+    const wrongHeadingHierarchy = rgaa9.RGAA911(headings);
+    const wrongHeadingStructure = rgaa9.RGAA913(headings);
 
     const allResults = [
       ...wrongElement,
@@ -78,6 +84,8 @@ export class Core {
       ...wrongLinks,
       ...wrongFormFieldsLabels,
       ...wrongFormFieldsLabelStructure,
+      ...wrongHeadingHierarchy,
+      ...wrongHeadingStructure,
     ];
 
     const groupedResults = allResults.reduce<{ [key: string]: LogMessageParams[] }>((acc, res) => {

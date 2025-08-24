@@ -2,7 +2,7 @@ import { expect, it, describe, beforeEach, afterEach } from 'vitest';
 import { unlinkSync, existsSync } from 'fs';
 import { Core } from '../src/core.js';
 import type { SvgImageArea } from '../src/rules/RGAA1.js';
-import type { VirtualConstratsElement } from '../src/rules/RGAA3.js';
+import type { VirtualContrastsElement } from '../src/rules/RGAA3.js';
 
 describe('Core', () => {
   let core: Core;
@@ -61,7 +61,7 @@ describe('Core', () => {
         },
       ];
 
-      const mockColors: VirtualConstratsElement[] = [
+      const mockColors: VirtualContrastsElement[] = [
         {
           backgroundColor: 'rgb(255, 255, 255)',
           textColor: 'rgb(200, 200, 200)',
@@ -103,7 +103,7 @@ describe('Core', () => {
         },
       ];
 
-      const mockColors: VirtualConstratsElement[] = [
+      const mockColors: VirtualContrastsElement[] = [
         {
           backgroundColor: 'rgb(255, 255, 255)',
           textColor: 'rgb(200, 200, 200)',
@@ -206,7 +206,7 @@ describe('Core', () => {
     });
 
     it('should handle multiple color contrast violations', () => {
-      const mockColors: VirtualConstratsElement[] = [
+      const mockColors: VirtualContrastsElement[] = [
         {
           backgroundColor: 'rgb(255, 255, 255)',
           textColor: 'rgb(200, 200, 200)',
