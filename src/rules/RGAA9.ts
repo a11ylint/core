@@ -1,15 +1,7 @@
 import type { LogMessageParams } from '../types.js';
+import { toNormalizedHeading, type NormalizedHeading } from '../utils/elementAdapter.js';
 
-export type HeadingVirtualElement = {
-  type: 'heading';
-  tagName: string;
-  level?: number;
-  textContent?: string;
-  role?: string;
-  ariaLevel?: string | null;
-  outerHTML: string;
-  index?: number;
-};
+export type HeadingVirtualElement = NormalizedHeading;
 
 type HeadingElement = HeadingVirtualElement | HTMLHeadingElement | HTMLElement;
 
@@ -25,7 +17,17 @@ export class RGAA9 {
   public RGAA911(elements: Array<HeadingElement>): LogMessageParams[] {
     this.wrongElements = [];
 
-    const headings = this.extractHeadings(elements);
+    const headings: Array<HeadingInfo> = elements
+      .map((el, index) => ({ original: el, normalized: toNormalizedHeading(el, index) }))
+      .filter(h => typeof h.normalized.tagName === 'string' || h.normalized.role === 'heading')
+      .map(h => ({
+        element: h.original as HeadingElement,
+        level: this.getHeadingLevelFromNormalized(h.normalized),
+        index: h.normalized.index ?? 0,
+      }))
+      .filter(heading => heading.level > 0)
+      .sort((a, b) => a.index - b.index);
+
     const invalidHeadings = this.findInvalidHierarchyHeadings(headings);
 
     invalidHeadings.forEach((heading: HeadingInfo) => {
@@ -38,32 +40,14 @@ export class RGAA9 {
   public RGAA913(elements: Array<HeadingElement>): LogMessageParams[] {
     this.wrongElements = [];
 
-    elements.forEach(el => {
-      if (!this.isValidHeadingStructure(el)) {
+    elements.forEach((el, index) => {
+      const normalized = toNormalizedHeading(el, index);
+      if (!this.isValidHeadingStructureNormalized(normalized)) {
         this.addWrongElementRGAA913(el);
       }
     });
 
     return this.wrongElements;
-  }
-
-  private extractHeadings(elements: Array<HeadingElement>): Array<HeadingInfo> {
-    return elements
-      .map((el, index) => ({
-        element: el,
-        level: this.getHeadingLevel(el),
-        index: this.getElementIndex(el, index),
-      }))
-      .filter(heading => heading.level > 0)
-      .sort((a, b) => a.index - b.index);
-  }
-
-  private getElementIndex(element: HeadingElement, fallbackIndex: number): number {
-    if (!(element instanceof HTMLElement) && 'index' in element && typeof element.index === 'number') {
-      return element.index;
-    }
-
-    return fallbackIndex;
   }
 
   private findInvalidHierarchyHeadings(headings: Array<HeadingInfo>): Array<HeadingInfo> {
@@ -93,48 +77,43 @@ export class RGAA9 {
     return invalidHeadings;
   }
 
-  private getHeadingLevel(element: HeadingElement): number {
-    if (element instanceof HTMLElement && /^H[1-6]$/i.test(element.tagName)) {
-      return parseInt(element.tagName.charAt(1), 10);
+  private getHeadingLevelFromNormalized(normalized: NormalizedHeading): number {
+    const tag = normalized.tagName;
+    if (typeof tag === 'string' && /^H[1-6]$/i.test(tag)) {
+      return parseInt(tag.charAt(1), 10);
     }
 
-    if (!(element instanceof HTMLElement) && 'tagName' in element && /^H[1-6]$/i.test(element.tagName)) {
-      return parseInt(element.tagName.charAt(1), 10);
-    }
-
-    const role = element instanceof HTMLElement ? element.getAttribute('role') : element.role;
-    if (role === 'heading') {
-      const ariaLevel = element instanceof HTMLElement ? element.getAttribute('aria-level') : element.ariaLevel;
-      if (ariaLevel) {
-        const level = parseInt(ariaLevel, 10);
-        return Number.isNaN(level) ? 0 : level;
-      }
+    if (normalized.role === 'heading' && normalized.ariaLevel) {
+      const level = parseInt(normalized.ariaLevel, 10);
+      return Number.isNaN(level) ? 0 : level;
     }
 
     return 0;
   }
 
   private isValidHeadingStructure(element: HeadingElement): boolean {
-    const { tagName } = element;
-    if (/^H[1-6]$/i.test(tagName)) {
+    const normalized = toNormalizedHeading(element);
+    return this.isValidHeadingStructureNormalized(normalized);
+  }
+
+  private isValidHeadingStructureNormalized(normalized: NormalizedHeading): boolean {
+    const tag = normalized.tagName;
+    if (typeof tag === 'string' && /^H[1-6]$/i.test(tag)) {
       return true;
     }
 
-    const role = element instanceof HTMLElement ? element.getAttribute('role') : element.role;
-    if (role === 'heading') {
-      const ariaLevel = element instanceof HTMLElement ? element.getAttribute('aria-level') : element.ariaLevel;
-      if (ariaLevel) {
-        const level = parseInt(ariaLevel, 10);
-        return !Number.isNaN(level) && level >= 1;
-      }
+    if (normalized.role === 'heading' && normalized.ariaLevel) {
+      const level = parseInt(normalized.ariaLevel, 10);
+      return !Number.isNaN(level) && level >= 1;
     }
 
     return false;
   }
 
   private addWrongElementRGAA911(el: HeadingElement) {
+    const outer = toNormalizedHeading(el).outerHTML ?? String(el);
     this.wrongElements.push({
-      element: el.outerHTML,
+      element: outer,
       rule: 'RGAA - 9.1.1',
       ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#9.1.1',
       message: 'The hierarchy between headings must be relevant',
@@ -142,8 +121,9 @@ export class RGAA9 {
   }
 
   private addWrongElementRGAA913(el: HeadingElement) {
+    const outer = toNormalizedHeading(el).outerHTML ?? String(el);
     this.wrongElements.push({
-      element: el.outerHTML,
+      element: outer,
       rule: 'RGAA - 9.1.3',
       ruleLink: 'https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#9.1.3',
       message: 'Each heading must be structured with a <hx> tag or with role="heading" and aria-level attributes',

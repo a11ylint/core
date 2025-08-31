@@ -1,4 +1,3 @@
-import { AuditGenerator } from './audit/generateAudit.js';
 import { RGAA1, SvgImageArea } from './rules/RGAA1.js';
 import { RGAA2 } from './rules/RGAA2.js';
 import { RGAA6 } from './rules/RGAA6.js';
@@ -147,25 +146,43 @@ export class Core {
    * @param {string} [params.options.baseUrl='audit.html'] - The base URL for the HTML report.
    * @param {boolean} [params.options.cli=false] - Whether to generate a CLI report.
    */
-  public generateAudit({
+  public async generateAudit({
     results,
     options = { html: false, json: false, baseUrl: 'audit.html', cli: false },
   }: {
     results: Array<{ url: string; result: { [key: string]: Array<LogMessageParams> } }>;
     options: AuditOptions;
   }) {
-    const generator = new AuditGenerator();
-    if (options.html) {
-      generator.generateHtmlAudit({ results, baseUrl: options.baseUrl });
+    // If running in Node, dynamically import the Node-only AuditGenerator
+    if (typeof window === 'undefined') {
+      const { AuditGenerator } = await import('./audit/generateAudit.js');
+      const generator = new AuditGenerator();
+      if (options.html) {
+        generator.generateHtmlAudit({ results, baseUrl: options.baseUrl });
+      }
+      if (options.json) {
+        generator.generateJsonAudit({ results, baseUrl: options.baseUrl });
+      }
+      if (options.cli) {
+        generator.generateAudit({ results });
+      }
+      if (!options.html && !options.json && !options.cli) {
+        throw new Error('No audit format specified. Please set html, json, or cli to true in options.');
+      }
+      return;
     }
-    if (options.json) {
-      generator.generateJsonAudit({ results, baseUrl: options.baseUrl });
-    }
-    if (options.cli) {
-      generator.generateAudit({ results });
-    }
-    if (!options.html && !options.json && !options.cli) {
-      throw new Error('No audit format specified. Please set html, json, or cli to true in options.');
+
+    // Browser fallback: return mapped results (no fs access in browser)
+    const self = this as unknown as { mapResultsForBrowser?: (r: unknown) => unknown };
+    if (self.mapResultsForBrowser) {
+      self.mapResultsForBrowser(results);
     }
   }
 }
+
+// Helper used in browser fallback to map results into a browser-serializable structure
+// Kept outside class to avoid changing the public API, but can be attached to Core instances if needed
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(Core.prototype as any).mapResultsForBrowser = function mapResultsForBrowser(results: any) {
+  return results;
+};
