@@ -61,7 +61,7 @@
     "semantic-release": "^25.0.1",
     "tsc-files": "^1.1.4",
     "typescript": "^5.9.3",
-    "vite": "^7.1.11",
+    "vite": "^7.1.12",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
     "vitest-sonar-reporter": "^3.0.0"
