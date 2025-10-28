@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars';
-import { readFileSync, writeFileSync } from 'fs';
-import { join, dirname as pathDirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname as pathDirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LogMessageParams } from 'src/types.js';
 import { DICTIONARY } from '../utils/dictionary.js';
 
