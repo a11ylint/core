@@ -48,7 +48,7 @@
     "@pplancq/prettier-config": "^1.2.8",
     "@pplancq/semantic-release-config": "^2.0.1",
     "@testing-library/jest-dom": "^6.9.1",
-    "@types/node": "^24.9.1",
+    "@types/node": "^24.9.2",
     "@vitest/coverage-v8": "^4.0.4",
     "concurrently": "^9.2.1",
     "eslint": "^9.38.0",
@@ -83,7 +83,7 @@
     ]
   },
   "volta": {
-    "node": "22.21.0",
+    "node": "24.11.0",
     "npm": "11.6.2"
   },
   "files": [
