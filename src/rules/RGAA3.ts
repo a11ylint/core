@@ -1,4 +1,4 @@
-import { Color } from 'src/utils/color.js';
+import { Color } from '../utils/color.js';
 import { LogMessageParams, Mode } from '../types.js';
 
 export type ConstratsElement = {
