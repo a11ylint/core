@@ -1,6 +1,6 @@
 {
   "name": "@a11ylint/core",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "license": "MIT",
   "description": "Accessibility core linter",
   "author": "PLANCQ Paul <paul.plancq@outlook.fr>",
