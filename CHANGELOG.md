@@ -1,3 +1,9 @@
+## [1.0.0-alpha.7](https://github.com/a11ylint/core/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2025-11-12)
+
+### Bug Fixes
+
+* **RGAA3:** fixing the import for the build package ([3fd5b8d](https://github.com/a11ylint/core/commit/3fd5b8d54b58134725f018acf7559568b7b82b39))
+
 ## [1.0.0-alpha.6](https://github.com/a11ylint/core/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2025-11-11)
 
 ### Features
