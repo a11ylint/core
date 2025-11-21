@@ -49,7 +49,7 @@
     "@pplancq/semantic-release-config": "^2.0.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.9",
+    "@vitest/coverage-v8": "^4.0.10",
     "concurrently": "^9.2.1",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "eslint": "^9.39.1",
@@ -64,7 +64,7 @@
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.9",
+    "vitest": "^4.0.10",
     "vitest-sonar-reporter": "^3.0.0"
   },
   "prettier": "@pplancq/prettier-config",
