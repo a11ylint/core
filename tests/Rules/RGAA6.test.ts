@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { RGAA6, type AnchorVirtualElement } from '../../src/rules/RGAA6.js';
 
 describe('RGAA6', () => {
-  const rgaa6 = new RGAA6();
+  const rgaa6 = new RGAA6('dom');
 
   describe('RGAA6.2 - Does each link have a label?', () => {
     describe('DOM Element', () => {
@@ -62,6 +62,7 @@ describe('RGAA6', () => {
     });
 
     describe('Virtual Element', () => {
+      const rgaa6Virtual = new RGAA6('virtual');
       it('should validate a link with text', () => {
         const linkElement: AnchorVirtualElement = {
           type: 'link',
@@ -69,7 +70,7 @@ describe('RGAA6', () => {
           outerHTML: '<a href="https://example.com">Link to example.com</a>',
         };
 
-        const result = rgaa6.RGAA62([linkElement]);
+        const result = rgaa6Virtual.RGAA62([linkElement]);
         expect(result).toHaveLength(0);
       });
 
@@ -81,7 +82,7 @@ describe('RGAA6', () => {
           outerHTML: '<a href="https://example.com" aria-label="Go to example site"></a>',
         };
 
-        const result = rgaa6.RGAA62([linkElement]);
+        const result = rgaa6Virtual.RGAA62([linkElement]);
         expect(result).toHaveLength(0);
       });
 
@@ -93,7 +94,7 @@ describe('RGAA6', () => {
           outerHTML: '<a href="https://example.com" aria-labelledby="link-description"></a>',
         };
 
-        const result = rgaa6.RGAA62([linkElement]);
+        const result = rgaa6Virtual.RGAA62([linkElement]);
         expect(result).toHaveLength(0);
       });
 
@@ -105,7 +106,7 @@ describe('RGAA6', () => {
           outerHTML: '<a href="https://example.com" title="Example.com site"></a>',
         };
 
-        const result = rgaa6.RGAA62([linkElement]);
+        const result = rgaa6Virtual.RGAA62([linkElement]);
         expect(result).toHaveLength(0);
       });
 
@@ -116,7 +117,7 @@ describe('RGAA6', () => {
           outerHTML: '<a href="https://example.com"></a>',
         };
 
-        const result = rgaa6.RGAA62([linkElement]);
+        const result = rgaa6Virtual.RGAA62([linkElement]);
         expect(result).toHaveLength(1);
         expect(result[0].rule).toBe('RGAA - 6.2.1');
         expect(result[0].message).toBe('Each link must have a label (text or alternative)');
@@ -130,7 +131,7 @@ describe('RGAA6', () => {
           textContent: '',
         };
 
-        const result = rgaa6.RGAA62([linkElement]);
+        const result = rgaa6Virtual.RGAA62([linkElement]);
         expect(result).toHaveLength(0);
       });
     });

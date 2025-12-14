@@ -1,4 +1,4 @@
-import type { LogMessageParams } from '../types.js';
+import type { LogMessageParams, Mode } from '../types.js';
 
 export type AnchorVirtualElement = {
   type: 'link';
@@ -12,13 +12,30 @@ export type AnchorVirtualElement = {
 };
 
 export class RGAA6 {
+  private mode: Mode;
+
   private wrongElements: Array<LogMessageParams> = [];
+
+  constructor(mode: Mode) {
+    this.mode = mode;
+  }
 
   RGAA62(elements: Array<AnchorVirtualElement>): LogMessageParams[];
 
   RGAA62(elements: Array<HTMLAnchorElement | HTMLElement>): LogMessageParams[];
 
   public RGAA62(elements: Array<AnchorVirtualElement | HTMLAnchorElement | HTMLElement>): LogMessageParams[] {
+    switch (this.mode) {
+      case 'dom':
+        return this.RGAA62_dom(elements as Array<HTMLAnchorElement | HTMLElement>);
+      case 'virtual':
+        return this.RGAA62_virtual(elements as Array<AnchorVirtualElement>);
+      default:
+        throw new Error(`Unknown mode: ${this.mode}`);
+    }
+  }
+
+  private RGAA62_dom(elements: Array<HTMLAnchorElement | HTMLElement>): LogMessageParams[] {
     this.wrongElements = [];
 
     elements.forEach(el => {
@@ -26,11 +43,7 @@ export class RGAA6 {
         return;
       }
 
-      if (!(el instanceof HTMLElement) && el.href?.includes('#')) {
-        return;
-      }
-
-      if (!this.hasLinkTitle(el)) {
+      if (!this.hasLinkTitleDom(el)) {
         this.addWrongElementRGAA62(el);
       }
     });
@@ -38,15 +51,46 @@ export class RGAA6 {
     return this.wrongElements;
   }
 
-  private hasLinkTitle(element: AnchorVirtualElement | HTMLElement): boolean {
-    const ariaLabel = element instanceof HTMLElement ? element.getAttribute('aria-label') : element.ariaLabel;
+  private RGAA62_virtual(elements: Array<AnchorVirtualElement>): LogMessageParams[] {
+    this.wrongElements = [];
+
+    elements.forEach(el => {
+      if (el.href?.includes('#')) {
+        return;
+      }
+
+      if (!this.hasLinkTitleVirtual(el)) {
+        this.addWrongElementRGAA62(el);
+      }
+    });
+
+    return this.wrongElements;
+  }
+
+  private hasLinkTitleDom(element: HTMLElement): boolean {
+    const ariaLabel = element.getAttribute('aria-label');
     if (ariaLabel?.trim()) {
       return true;
     }
 
-    const ariaLabelledby =
-      element instanceof HTMLElement ? element.getAttribute('aria-labelledby') : element.ariaLabelledby;
+    const ariaLabelledby = element.getAttribute('aria-labelledby');
     if (ariaLabelledby) {
+      return true;
+    }
+
+    if (element.title?.trim()) {
+      return true;
+    }
+
+    return !!element.textContent?.trim();
+  }
+
+  private hasLinkTitleVirtual(element: AnchorVirtualElement): boolean {
+    if (element.ariaLabel?.trim()) {
+      return true;
+    }
+
+    if (element.ariaLabelledby) {
       return true;
     }
 

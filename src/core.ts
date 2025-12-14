@@ -51,7 +51,7 @@ export class Core {
   }: runParams) {
     const rgaa1 = new RGAA1(mode);
     const rgaa2 = new RGAA2(mode);
-    const rgaa6 = new RGAA6();
+    const rgaa6 = new RGAA6(mode);
     const rgaa8 = new RGAA8();
     const rgaa3 = new RGAA3(mode);
     const rgaa11 = new RGAA11(mode);
