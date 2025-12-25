@@ -46,7 +46,7 @@
     "@pplancq/commitlint-config": "^2.3.1",
     "@pplancq/eslint-config": "^5.0.17",
     "@pplancq/prettier-config": "^1.2.8",
-    "@pplancq/semantic-release-config": "^2.0.3",
+    "@pplancq/semantic-release-config": "^2.0.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^24.10.4",
     "@vitest/coverage-v8": "^4.0.16",
