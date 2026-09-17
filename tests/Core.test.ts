@@ -1,4 +1,4 @@
-import { expect, it, describe, beforeEach, afterEach } from 'vitest';
+import { expect, it, describe, beforeEach, afterEach, vi } from 'vitest';
 import { unlinkSync, existsSync } from 'fs';
 import { Core } from '../src/core.js';
 import type { SvgImageArea } from '../src/rules/RGAA1.js';
@@ -334,6 +334,38 @@ describe('Core', () => {
           options: { cli: true },
         });
       }).not.toThrow();
+    });
+
+    it('should handle markdown format', () => {
+      const expectedFileName = 'audit.md';
+      generatedFiles.push(expectedFileName);
+
+      expect(() => {
+        core.generateAudit({
+          results: [],
+          options: { markdown: true },
+        });
+      }).not.toThrow();
+    });
+
+    it('should invoke custom exporters', () => {
+      const generate = vi.fn();
+      const results = [
+        {
+          url: 'https://example.com',
+          result: {},
+        },
+      ];
+
+      core.generateAudit({
+        results,
+        options: {
+          exporters: [{ generate }],
+          baseUrl: 'custom-audit',
+        },
+      });
+
+      expect(generate).toHaveBeenCalledWith({ results, baseUrl: 'custom-audit' });
     });
   });
 });

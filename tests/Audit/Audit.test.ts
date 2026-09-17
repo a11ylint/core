@@ -225,6 +225,47 @@ describe('AuditGenerator', () => {
     });
   });
 
+  describe('generateMarkdownAudit', () => {
+    it('should generate a GitHub-compatible Markdown audit', () => {
+      auditGenerator.generateMarkdownAudit({ results: sampleResults });
+
+      const expectedFilename = 'audit.md';
+      generatedFiles.push(expectedFilename);
+
+      expect(fs.existsSync(expectedFilename)).toBeTruthy();
+      const fileContent = fs.readFileSync(expectedFilename, 'utf-8');
+      expect(fileContent).toContain('# Accessibility audit');
+      expect(fileContent).toContain('## https://example.com');
+      expect(fileContent).toContain(
+        '### [RGAA - 1.1.1](https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#1.1.1)',
+      );
+      expect(fileContent).toContain('img elements should have alt, aria-label, title or aria-labelledby');
+      expect(fileContent).toContain('```html\n<img src="test.jpg">\n```');
+    });
+
+    it('should generate Markdown with a custom baseUrl', () => {
+      auditGenerator.generateMarkdownAudit({
+        results: sampleResults,
+        baseUrl: 'https://example.com',
+      });
+
+      const expectedFilename = 'example.com.md';
+      generatedFiles.push(expectedFilename);
+
+      expect(fs.existsSync(expectedFilename)).toBeTruthy();
+    });
+
+    it('should report when a URL has no accessibility issues', () => {
+      auditGenerator.generateMarkdownAudit({ results: emptyResults });
+
+      const expectedFilename = 'audit.md';
+      generatedFiles.push(expectedFilename);
+
+      const fileContent = fs.readFileSync(expectedFilename, 'utf-8');
+      expect(fileContent).toContain('No accessibility issues found.');
+    });
+  });
+
   describe('generateAudit (CLI)', () => {
     it('should generate CLI audit', () => {
       auditGenerator.generateAudit({ results: sampleResults });
