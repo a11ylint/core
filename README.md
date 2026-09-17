@@ -22,7 +22,7 @@ Stay tuned for updates as we build a robust and cohesive accessibility testing s
 ## ✨ Features
 
 - **RGAA Compliance Testing**: Automated testing for French accessibility standards
-- **Multiple Output Formats**: Generate reports in HTML, JSON, or CLI formats
+- **Multiple Output Formats**: Generate reports in HTML, JSON, Markdown, or CLI formats
 - **Comprehensive Rule Coverage**: Support for RGAA 1.x, 2.x, 3.x, 6.x, 8.x, and 9.x rules
 - **DOM & Virtual Testing**: Works with both real DOM elements and virtual representations
 - **Color Contrast Analysis**: Advanced color contrast calculations following RGAA guidelines
@@ -73,6 +73,7 @@ a11ylint.generateAudit({
   options: {
     html: true,
     json: true,
+    markdown: true,
     cli: true,
     baseUrl: 'https://example.com'
   }
@@ -105,10 +106,47 @@ a11ylint.generateAudit({
 - Structured data for custom processing
 - API-friendly output
 
+### Markdown Reports
+- GitHub-compatible output suitable for pull request comments
+- Grouped by audited URL and RGAA rule
+- Generated as `audit.md` by default, or from the `baseUrl` option
+
+```typescript
+a11ylint.generateAudit({
+  results: [{ url: 'https://example.com', result: results }],
+  options: {
+    markdown: true,
+    baseUrl: 'audit'
+  }
+});
+```
+
 ### CLI Reports
 - Terminal-friendly output for development workflows
 - Quick overview of accessibility issues
 - Perfect for continuous integration
+
+### Custom exporters
+
+Implement the exported `AuditExporter` type and pass one or more exporters through `options.exporters`. Custom exporters can be used alone or together with built-in formats.
+
+```typescript
+import A11ylint, { type AuditExporter } from '@a11ylint/core';
+
+const exporter: AuditExporter = {
+  generate({ results, baseUrl }) {
+    // Send or serialize the results in the required format.
+  }
+};
+
+new A11ylint().generateAudit({
+  results: [{ url: 'https://example.com', result: results }],
+  options: {
+    baseUrl: 'audit',
+    exporters: [exporter]
+  }
+});
+```
 
 ## 🧪 Testing Modes
 
