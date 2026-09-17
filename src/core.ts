@@ -6,7 +6,7 @@ import { ConstratsElement, RGAA3, VirtualContrastsElement } from './rules/RGAA3.
 import { RGAA11, FormFieldElement } from './rules/RGAA11.js';
 import { RGAA8 } from './rules/RGAA8.js';
 import { RGAA9, HeadingVirtualElement } from './rules/RGAA9.js';
-import { LogMessageParams, Mode } from './types.js';
+import { AuditExporter, AuditResults, LogMessageParams, Mode } from './types.js';
 
 type runParams = {
   mode: Mode;
@@ -23,6 +23,8 @@ type runParams = {
 type AuditOptionsBase = {
   json?: boolean;
   cli?: boolean;
+  markdown?: boolean;
+  exporters?: Array<AuditExporter>;
 };
 
 type AuditOptionsHtml = AuditOptionsBase & {
@@ -149,9 +151,9 @@ export class Core {
    */
   public generateAudit({
     results,
-    options = { html: false, json: false, baseUrl: 'audit.html', cli: false },
+    options = { html: false, json: false, baseUrl: 'audit.html', cli: false, markdown: false, exporters: [] },
   }: {
-    results: Array<{ url: string; result: { [key: string]: Array<LogMessageParams> } }>;
+    results: AuditResults;
     options: AuditOptions;
   }) {
     const generator = new AuditGenerator();
@@ -164,8 +166,14 @@ export class Core {
     if (options.cli) {
       generator.generateAudit({ results });
     }
-    if (!options.html && !options.json && !options.cli) {
-      throw new Error('No audit format specified. Please set html, json, or cli to true in options.');
+    if (options.markdown) {
+      generator.generateMarkdownAudit({ results, baseUrl: options.baseUrl });
+    }
+    options.exporters?.forEach(exporter => {
+      exporter.generate({ results, baseUrl: options.baseUrl });
+    });
+    if (!options.html && !options.json && !options.cli && !options.markdown && !options.exporters?.length) {
+      throw new Error('No audit format specified. Please enable a built-in format or provide an exporter in options.');
     }
   }
 }

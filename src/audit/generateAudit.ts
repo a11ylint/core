@@ -2,8 +2,21 @@ import Handlebars from 'handlebars';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname as pathDirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LogMessageParams } from 'src/types.js';
+import { AuditResults, LogMessageParams } from 'src/types.js';
 import { DICTIONARY } from '../utils/dictionary.js';
+
+type MappedAudit = Record<
+  string,
+  Record<
+    string,
+    {
+      message: string;
+      ruleLink: string;
+      issues: Array<{ element: string }>;
+      hasDomElement: boolean;
+    }
+  >
+>;
 
 export class AuditGenerator {
   public generateHtmlAudit({
@@ -40,6 +53,38 @@ export class AuditGenerator {
     );
   }
 
+  public generateMarkdownAudit({ results, baseUrl }: { results: AuditResults; baseUrl?: string }) {
+    console.info(`Generating Markdown file test audit for ${baseUrl}`);
+    const mappedResultsObject = this.mapTemplateObject(results);
+    const markdown = ['# Accessibility audit', ''];
+
+    Object.entries(mappedResultsObject).forEach(([url, rules]) => {
+      markdown.push(`## ${url}`, '');
+      const ruleEntries = Object.entries(rules);
+
+      if (ruleEntries.length === 0) {
+        markdown.push('No accessibility issues found.', '');
+        return;
+      }
+
+      ruleEntries.forEach(([rule, details]) => {
+        const heading = details.ruleLink ? `[${rule}](${details.ruleLink})` : rule;
+        markdown.push(`### ${heading}`, '', details.message, '');
+        details.issues.forEach(issue => {
+          if (issue.element?.trim()) {
+            markdown.push('```html', issue.element, '```', '');
+          }
+        });
+      });
+    });
+
+    const content = `${markdown.join('\n').trimEnd()}\n`;
+    const currentBaseUrl = baseUrl?.replace(/https?:\/\//, '') || 'audit';
+    writeFileSync(`${currentBaseUrl}.md`, content);
+    console.info(`Markdown file test audit generated at ${currentBaseUrl}.md`);
+    return content;
+  }
+
   // generateAudit function to create a JSON audit
   public generateJsonAudit({
     results,
@@ -68,8 +113,8 @@ export class AuditGenerator {
     console.info(mappedResultsObject);
   }
 
-  private mapTemplateObject(results: Array<{ url: string; result: { [key: string]: Array<LogMessageParams> } }>) {
-    let mappedResultsObject = {};
+  private mapTemplateObject(results: AuditResults): MappedAudit {
+    let mappedResultsObject: MappedAudit = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const result of results) {
       const mappedResult = Object.entries(result.result).reduce(
@@ -89,7 +134,7 @@ export class AuditGenerator {
             message: string;
             ruleLink: string;
             issues: Array<{ element: string }>;
-            hasDomElement?: boolean;
+            hasDomElement: boolean;
           };
         },
       );

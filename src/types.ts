@@ -6,3 +6,12 @@ export type LogMessageParams = {
 };
 
 export type Mode = 'dom' | 'virtual';
+
+export type AuditResults = Array<{
+  url: string;
+  result: { [key: string]: Array<LogMessageParams> };
+}>;
+
+export type AuditExporter = {
+  generate(params: { results: AuditResults; baseUrl?: string }): unknown;
+};
