@@ -1,5 +1,5 @@
 import Handlebars from 'handlebars';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname as pathDirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AuditResults, LogMessageParams } from 'src/types.js';
@@ -60,7 +60,7 @@ export class AuditGenerator {
 
     Object.entries(mappedResultsObject).forEach(([url, rules]) => {
       markdown.push(`## ${url}`, '');
-      const ruleEntries = Object.entries(rules);
+      const ruleEntries = Object.entries(rules).filter(([, details]) => details.issues.length > 0);
 
       if (ruleEntries.length === 0) {
         markdown.push('No accessibility issues found.', '');
@@ -80,6 +80,7 @@ export class AuditGenerator {
 
     const content = `${markdown.join('\n').trimEnd()}\n`;
     const currentBaseUrl = baseUrl?.replace(/https?:\/\//, '') || 'audit';
+    mkdirSync(pathDirname(currentBaseUrl), { recursive: true });
     writeFileSync(`${currentBaseUrl}.md`, content);
     console.info(`Markdown file test audit generated at ${currentBaseUrl}.md`);
     return content;

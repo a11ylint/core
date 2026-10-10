@@ -264,6 +264,40 @@ describe('AuditGenerator', () => {
       const fileContent = fs.readFileSync(expectedFilename, 'utf-8');
       expect(fileContent).toContain('No accessibility issues found.');
     });
+
+    it('should ignore rules without issues', () => {
+      auditGenerator.generateMarkdownAudit({
+        results: [
+          {
+            url: 'https://clean-site.com',
+            result: { 'RGAA - 1.1.1': [], 'RGAA - 8.1.1': [] },
+          },
+        ],
+      });
+
+      const expectedFilename = 'audit.md';
+      generatedFiles.push(expectedFilename);
+
+      const fileContent = fs.readFileSync(expectedFilename, 'utf-8');
+      expect(fileContent).toContain('No accessibility issues found.');
+      expect(fileContent).not.toContain('### ');
+    });
+
+    it('should create the parent directories of a baseUrl with a path', () => {
+      auditGenerator.generateMarkdownAudit({
+        results: sampleResults,
+        baseUrl: 'https://markdown-report.test/reports/audit',
+      });
+
+      const expectedFilename = 'markdown-report.test/reports/audit.md';
+      generatedFiles.push(expectedFilename);
+
+      try {
+        expect(fs.existsSync(expectedFilename)).toBeTruthy();
+      } finally {
+        fs.rmSync('markdown-report.test', { recursive: true, force: true });
+      }
+    });
   });
 
   describe('generateAudit (CLI)', () => {
